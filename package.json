@@ -1,0 +1,37 @@
+{
+  "name": "versioned-value-map",
+  "version": "1.0.0",
+  "description": "The immutable container of time-series data ",
+  "main": "./dist/index.js",
+  "jsnext:main": "./jsnext.js",
+  "scripts": {
+    "test": "kocha --require babel-register test/*.js --color always",
+    "build": "BABEL_ENV=build babel -d dist src"
+  },
+  "author": "Shin Suzuki <shinout310@gmail.com>",
+  "license": "Apache License 2.0",
+  "dependencies": {
+    "power-assign": "^0.2.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CureApp/versioned-value-map.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CureApp/versioned-value-map/issues"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-plugin-transform-strip-jsnext": "^2.0.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-power-assert": "^1.0.0",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.10.0",
+    "eslint-plugin-flowtype": "^2.39.1",
+    "flow-bin": "~0.66.0",
+    "kocha": "^1.9.1",
+    "power-assert": "^1.4.4"
+  }
+}
