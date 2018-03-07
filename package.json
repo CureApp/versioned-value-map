@@ -1,6 +1,6 @@
 {
   "name": "versioned-value-map",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The immutable container of time-series data ",
   "main": "./dist/index.js",
   "jsnext:main": "./jsnext.js",
