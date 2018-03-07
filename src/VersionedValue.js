@@ -14,7 +14,7 @@ export type PlainVersionedValue<T> = {
 
 export type MixedVersionedValue<T> = PlainVersionedValue<T> | VersionedValue<T>
 
-export default class VersionedValue<T> {
+export class VersionedValue<T> {
   name: string
   records: Array<Record<T>>
 

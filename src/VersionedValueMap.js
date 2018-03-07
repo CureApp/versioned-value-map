@@ -1,5 +1,5 @@
 // @flow
-import VersionedValue from './VersionedValue.js'
+import { VersionedValue } from './VersionedValue.js'
 import type { MixedVersionedValue } from './VersionedValue.js'
 import { retargetToProp, assign } from 'power-assign/jsnext'
 type ISOString = string
@@ -25,7 +25,7 @@ function createItems(plainItems: { [key: string]: MixedVersionedValue<*> }): { [
   return items
 }
 
-export default class VersionedValueMap {
+export class VersionedValueMap {
 
   items: { [name: string]: VersionedValue<*> }
 
