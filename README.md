@@ -226,6 +226,8 @@ Make sure that `state` contains plain map object and every time reducer is calle
 We've benchmarked the performance and found that **a map with 5000 items containing 10 datapoints will be constructed within 1msec** (in Node.js v8).
 That means that we can ignore the construction cost in modern JS environments.
 
+# Flow
+
 If you are using [flow](https://flow.org), you can use its type by the following statement.
 
 ```js
@@ -250,6 +252,29 @@ npm install babel-plugin-transform-strip-jsnext
 Also make sure to add the following line to the `[options]` section in your `.flowconfig`.
 ```
 suppress_comment=.*\\$FlowIssue(\\(.*\\))?
+```
+
+## Put type map for better inference
+
+Put type map in initializing instances as below.
+
+```js
+import { VersionedValueMap } from 'versioned-value-map/jsnext'
+
+const map: VersionedValueMap<{ foo: string, bar: number }> = new VersionedValueMap()
+```
+
+Then, flow can get its types.
+```js
+const str = map.get('foo')
+if (str != null) {
+  // here, str is regarded as string
+}
+
+const num = map.get('bar')
+if (num != null) {
+  // here, num is regarded as number
+}
 ```
 
 # API Documentation
