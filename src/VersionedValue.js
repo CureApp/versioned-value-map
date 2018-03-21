@@ -7,18 +7,18 @@ export type Record<T> = {
   at: ISOString,
 }
 
-export type PlainVersionedValue<T> = {
-  name: string,
+export type PlainVersionedValue<T, N: string> = {
+  name: N,
   records?: Array<Record<T>>,
 }
 
-export type MixedVersionedValue<T> = PlainVersionedValue<T> | VersionedValue<T>
+export type MixedVersionedValue<T, N: string> = PlainVersionedValue<T, N> | VersionedValue<T, N>
 
-export class VersionedValue<T> {
-  name: string
+export class VersionedValue<T, N: string> {
+  name: N
   records: Array<Record<T>>
 
-  constructor (attrs: PlainVersionedValue<T>) {
+  constructor (attrs: PlainVersionedValue<T, N>) {
     this.name = attrs.name
     this.records = attrs.records || []
   }
@@ -62,7 +62,7 @@ export class VersionedValue<T> {
     return operation
   }
 
-  $add (value: T, at?: ?ISOString): VersionedValue<T> {
+  $add (value: T, at?: ?ISOString): VersionedValue<T, N> {
     return assignWithRestoration(this, this.add(value, at))
   }
 
@@ -81,7 +81,7 @@ export class VersionedValue<T> {
     throw new Error(`VersionedValue#remove(): "${this.name}" has no record at "${at}".`)
   }
 
-  $remove (at: ISOString) {
+  $remove (at: ISOString): VersionedValue<T, N> {
     return assignWithRestoration(this, this.remove(at))
   }
 
@@ -89,7 +89,7 @@ export class VersionedValue<T> {
     return { $pull: { records: this.newestRecord } }
   }
 
-  $removeNewest () {
+  $removeNewest (): VersionedValue<T, N> {
     return assignWithRestoration(this, this.removeNewest())
   }
 }

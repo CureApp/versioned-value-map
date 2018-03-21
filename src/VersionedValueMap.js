@@ -4,18 +4,22 @@ import type { MixedVersionedValue } from './VersionedValue.js'
 import { retargetToProp, assign } from 'power-assign/jsnext'
 type ISOString = string
 
-export type PlainVersionedValueMap = {
-  items?: { [key: string]: MixedVersionedValue<*> }
+export type ValueMap = { [string]: * }
+
+export type PlainItemMap<M: ValueMap> = $ObjMap<M, <T, N>(T) => MixedVersionedValue<T, N>>
+export type ItemMap<M: ValueMap> = $ObjMap<M, <T, N>(T) => VersionedValue<T, N>>
+export type PlainVersionedValueMap<M: ValueMap> = {
+  items?: PlainItemMap<M>
 }
 
-function createItem(value: MixedVersionedValue<*>): VersionedValue<*> {
+function createItem<T, N: string>(value: MixedVersionedValue<T, N>): VersionedValue<T, N> {
   return (value instanceof VersionedValue) ? value : new VersionedValue(value)
 }
 
-function createItems(plainItems: { [key: string]: MixedVersionedValue<*> }): { [name: string]: VersionedValue<*> } {
-  const items = {}
+function createItems<M: ValueMap>(plainItems: PlainItemMap<M>): ItemMap<M> {
+  const items: ItemMap<M> = {}
   Object.keys(plainItems).forEach(name => {
-    const value: MixedVersionedValue<*> = plainItems[name]
+    const value = plainItems[name]
     if (name !== value.name) {
       throw new Error(`VersionedValueMap: Invalid plain data were given to constructor. key: "${name}" but its value.name = "${value.name}".`)
     }
@@ -25,11 +29,11 @@ function createItems(plainItems: { [key: string]: MixedVersionedValue<*> }): { [
   return items
 }
 
-export class VersionedValueMap {
+export class VersionedValueMap<M: ValueMap> {
 
-  items: { [name: string]: VersionedValue<*> }
+  items: ItemMap<M>
 
-  constructor(attrs: PlainVersionedValueMap = {}, itemNamesToCheck?: Array<string>) {
+  constructor(attrs: PlainVersionedValueMap<$Shape<M>> = {}, itemNamesToCheck?: Array<$Keys<M>>) {
     if (itemNamesToCheck && attrs.items) {
       const checked = {}
       for (const itemNameToCheck of itemNamesToCheck) {
@@ -51,18 +55,18 @@ export class VersionedValueMap {
   }
 
 
-  hasItem (name: string): boolean {
+  hasItem (name: $Keys<M>): boolean {
     return this.items[name] != null
   }
 
-  getItem (name: string): VersionedValue<*> {
+  getItem<N: $Keys<M>> (name: N): $ElementType<ItemMap<M>, N> {
     if (!this.hasItem(name)) {
       throw new Error(`VersionedValueMap#getItem(): No item found with name = "${name}".`)
     }
     return this.items[name]
   }
 
-  get (name: string): any {
+  get<N: $Keys<M>> (name: N): ?$ElementType<M, N> {
     if (!this.hasItem(name)) {
       return null
     }
@@ -73,7 +77,7 @@ export class VersionedValueMap {
     return item.newestRecord.value
   }
 
-  addItem (name: string) {
+  addItem (name: $Keys<M>) {
     if (this.hasItem(name)) {
       throw new Error(`VersionedValueMap#addItem(): Item has already exists. name = "${name}".`)
     }
@@ -83,25 +87,24 @@ export class VersionedValueMap {
     }
   }
 
-  $addItem (name: string) {
+  $addItem (name: $Keys<M>): VersionedValueMap<M> {
     const plain = assign(this, this.addItem(name))
     return new VersionedValueMap(plain, [name])
   }
 
-  add (name: string, value: any, at?: ?ISOString) {
+  add<T, N: $Keys<M>> (name: N, value: T, at?: ?ISOString) {
     if (!this.hasItem(name)) {
       assertValidName(name)
-      return {
-        $set: { [`items.${name}`]: new VersionedValue({
-          name,
-          records: [{ value, at: at || new Date().toISOString() }]
-        }) }
-      }
+      const versionedValue: VersionedValue<T, N> = new VersionedValue({
+        name,
+        records: [{ value, at: at || new Date().toISOString() }]
+      })
+      return { $set: { [`items.${name}`]: versionedValue } }
     }
     return retargetToProp(`items.${name}`, this.getItem(name).add(value, at))
   }
 
-  $add (name: string, value: any, at?: ?ISOString): VersionedValueMap {
+  $add<T, N: $Keys<M>> (name: N, value: T, at?: ?ISOString): VersionedValueMap<M> {
     const plain = assign(this, this.add(name, value, at))
     return new VersionedValueMap(plain, [name])
   }
@@ -113,7 +116,7 @@ export class VersionedValueMap {
     return retargetToProp(`items.${name}`, this.getItem(name).remove(at))
   }
 
-  $remove (name: string, at: ISOString) {
+  $remove (name: string, at: ISOString): VersionedValueMap<M> {
     const plain = assign(this, this.remove(name, at))
     return new VersionedValueMap(plain, [name])
   }
@@ -125,7 +128,7 @@ export class VersionedValueMap {
     return retargetToProp(`items.${name}`, this.getItem(name).removeNewest())
   }
 
-  $removeNewest (name: string) {
+  $removeNewest (name: string): VersionedValueMap<M> {
     const plain = assign(this, this.removeNewest(name))
     return new VersionedValueMap(plain, [name])
   }

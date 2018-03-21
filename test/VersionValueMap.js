@@ -12,7 +12,7 @@ const isoStr = (secAgo: number) => {
 
 describe('VersionedValueMap', () => {
   it('is restorable', () => {
-    const x = new VersionedValueMap({
+    const x: VersionedValueMap<{ foo: string, bar: number }> = new VersionedValueMap({
       items: {
         foo: { name: 'foo' },
         bar: { name: 'bar', records: [{ value: 1, at: isoStr(1) }] },
@@ -93,7 +93,7 @@ describe('VersionedValueMap', () => {
 
   describe('get()', () => {
     it('returns the newest value of the item with the given name', () => {
-      const x = new VersionedValueMap({
+      const x: VersionedValueMap<{ foo: string, bar: number }> = new VersionedValueMap({
         items: {
           foo: { name: 'foo' },
           bar: { name: 'bar', records: [
