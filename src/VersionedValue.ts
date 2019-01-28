@@ -1,10 +1,10 @@
-import { assignWithRestoration } from "power-assign";
+import { updateAndRestore } from "@sp2/updater";
 type ISOString = string;
 export type Record<T> = {
   value: T;
   at: ISOString;
 };
-export type PlainVersionedValue<T, N extends string> = {
+export type PlainVersionedValue<T = any, N extends string = string> = {
   name: N;
   records?: Array<Record<T>>;
 };
@@ -86,7 +86,7 @@ export class VersionedValue<T, N extends string> {
   }
 
   $add(value: T, at?: ISOString | undefined | null): VersionedValue<T, N> {
-    return assignWithRestoration(this, this.add(value, at));
+    return updateAndRestore(this, this.add(value, at));
   }
 
   remove(at: ISOString) {
@@ -118,7 +118,7 @@ export class VersionedValue<T, N extends string> {
   }
 
   $remove(at: ISOString): VersionedValue<T, N> {
-    return assignWithRestoration(this, this.remove(at));
+    return updateAndRestore(this, this.remove(at));
   }
 
   removeNewest() {
@@ -130,6 +130,6 @@ export class VersionedValue<T, N extends string> {
   }
 
   $removeNewest(): VersionedValue<T, N> {
-    return assignWithRestoration(this, this.removeNewest());
+    return updateAndRestore(this, this.removeNewest());
   }
 }

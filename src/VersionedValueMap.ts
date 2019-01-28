@@ -1,5 +1,9 @@
-import { MixedVersionedValue, VersionedValue } from "./VersionedValue";
-import { assign, retargetToProp } from "power-assign";
+import {
+  MixedVersionedValue,
+  PlainVersionedValue,
+  VersionedValue
+} from "./VersionedValue";
+import { retargetOperation, update } from "@sp2/updater";
 type ISOString = string;
 
 export type GeneralValueMap = { [key in string]: any };
@@ -27,7 +31,9 @@ function createItems<M extends GeneralValueMap>(
   plainItems: PlainItemMap<M>
 ): ItemMap<M> {
   const items: ItemMap<M> = {} as ItemMap<M>;
-  Object.entries(plainItems).forEach(([name, value]) => {
+  Object.keys(plainItems).forEach(name => {
+    // @ts-ignore
+    const value: PlainVersionedValue = plainItems[name];
     if (name !== value.name) {
       throw new Error(
         `VersionedValueMap: Invalid plain data were given to constructor. key: "${name}" but its value.name = "${
@@ -36,6 +42,7 @@ function createItems<M extends GeneralValueMap>(
       );
     }
     assertValidName(name);
+    // @ts-ignore
     items[name] = createItem(value);
   });
   return items;
@@ -57,10 +64,12 @@ export class VersionedValueMap<M extends GeneralValueMap = GeneralValueMap> {
             `VersionedValueMap#constructor(): 2nd argument "${itemNameToInstantiate}" is invalid key.`
           );
         }
+        // @ts-ignore
         instantiated[itemNameToInstantiate] = createItem(itemToInstantiate);
       }
       this.items = Object.assign({}, attrs.items, instantiated);
     } else {
+      // @ts-ignore
       this.items = createItems(attrs.items || ({} as PlainItemMap<M>));
     }
   }
@@ -106,7 +115,7 @@ export class VersionedValueMap<M extends GeneralValueMap = GeneralValueMap> {
   }
 
   $addItem(name: Key<M>): VersionedValueMap<M> {
-    const plain = assign(this, this.addItem(name));
+    const plain = update(this, this.addItem(name));
     return new VersionedValueMap(plain, [name]);
   }
 
@@ -119,7 +128,10 @@ export class VersionedValueMap<M extends GeneralValueMap = GeneralValueMap> {
       });
       return { $set: { [`items.${name}`]: versionedValue } };
     }
-    return retargetToProp(`items.${name}`, this.getItem(name).add(value, at));
+    return retargetOperation(
+      `items.${name}`,
+      this.getItem(name).add(value, at)
+    );
   }
 
   $add<N extends Key<M>>(
@@ -127,7 +139,7 @@ export class VersionedValueMap<M extends GeneralValueMap = GeneralValueMap> {
     value: M[N],
     at?: ISOString | null
   ): VersionedValueMap<M> {
-    const plain = assign(this, this.add(name, value, at));
+    const plain = update(this, this.add(name, value, at));
     return new VersionedValueMap(plain, [name]);
   }
 
@@ -137,11 +149,11 @@ export class VersionedValueMap<M extends GeneralValueMap = GeneralValueMap> {
         `VersionedValueMap#remove(): No item found with name = "${name}".`
       );
     }
-    return retargetToProp(`items.${name}`, this.getItem(name).remove(at));
+    return retargetOperation(`items.${name}`, this.getItem(name).remove(at));
   }
 
   $remove(name: Key<M>, at: ISOString): VersionedValueMap<M> {
-    const plain = assign(this, this.remove(name, at));
+    const plain = update(this, this.remove(name, at));
     return new VersionedValueMap(plain, [name]);
   }
 
@@ -151,11 +163,14 @@ export class VersionedValueMap<M extends GeneralValueMap = GeneralValueMap> {
         `VersionedValueMap#removeNewest(): No item found with name = "${name}".`
       );
     }
-    return retargetToProp(`items.${name}`, this.getItem(name).removeNewest());
+    return retargetOperation(
+      `items.${name}`,
+      this.getItem(name).removeNewest()
+    );
   }
 
   $removeNewest(name: Key<M>): VersionedValueMap<M> {
-    const plain = assign(this, this.removeNewest(name));
+    const plain = update(this, this.removeNewest(name));
     return new VersionedValueMap(plain, [name]);
   }
 }

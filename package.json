@@ -19,6 +19,7 @@
   "author": "Shin Suzuki <shinout310@gmail.com>",
   "license": "Apache License 2.0",
   "dependencies": {
+    "@sp2/updater": "^1.1.0",
     "power-assign": "^0.2.3"
   },
   "repository": {
