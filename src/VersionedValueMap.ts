@@ -27,8 +27,7 @@ function createItems<M extends GeneralValueMap>(
   plainItems: PlainItemMap<M>
 ): ItemMap<M> {
   const items: ItemMap<M> = {} as ItemMap<M>;
-  Object.keys(plainItems).forEach(name => {
-    const value = plainItems[name];
+  Object.entries(plainItems).forEach(([name, value]) => {
     if (name !== value.name) {
       throw new Error(
         `VersionedValueMap: Invalid plain data were given to constructor. key: "${name}" but its value.name = "${

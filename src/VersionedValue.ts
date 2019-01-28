@@ -1,4 +1,4 @@
-import { assignWithRestoration } from "power-assign/jsnext";
+import { assignWithRestoration } from "power-assign";
 type ISOString = string;
 export type Record<T> = {
   value: T;
