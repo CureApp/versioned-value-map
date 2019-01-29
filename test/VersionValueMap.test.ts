@@ -42,7 +42,7 @@ describe("VersionedValueMap", () => {
           }
         }
       });
-    }, /Invalid name format/);
+    }, /Invalid plain data/);
   });
   it("throws an error when invalid data is passed", () => {
     assert.throws(() => {
@@ -459,13 +459,11 @@ describe("VersionedValueMap", () => {
       assert.deepEqual(op, {
         $pull: {
           "items.foo.records": {
-            $eq: {
-              value: {
-                a: 1,
-                b: "bar"
-              },
-              at: time
-            }
+            value: {
+              a: 1,
+              b: "bar"
+            },
+            at: time
           }
         }
       });
@@ -582,13 +580,11 @@ describe("VersionedValueMap", () => {
       assert.deepEqual(op, {
         $pull: {
           "items.foo.records": {
-            $eq: {
-              value: {
-                a: 2,
-                b: "baz"
-              },
-              at: foo.records[2].at
-            }
+            value: {
+              a: 2,
+              b: "baz"
+            },
+            at: foo.records[2].at
           }
         }
       });
