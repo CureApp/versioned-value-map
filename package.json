@@ -6,13 +6,20 @@
   "jsnext:main": "./jsnext.js",
   "scripts": {
     "test": "kocha --require babel-register test/*.js --color always",
-    "build": "BABEL_ENV=build babel -d dist src"
+    "build": "tsc -declaration"
   },
-  "files": ["src", "dist", "package.json", "jsnext.js", "LICENSE", "README.md"],
+  "files": [
+    "src",
+    "dist",
+    "package.json",
+    "jsnext.js",
+    "LICENSE",
+    "README.md"
+  ],
   "author": "Shin Suzuki <shinout310@gmail.com>",
   "license": "Apache License 2.0",
   "dependencies": {
-    "power-assign": "^0.2.3"
+    "@sp2/updater": "^1.1.0"
   },
   "repository": {
     "type": "git",
@@ -22,17 +29,14 @@
     "url": "https://github.com/CureApp/versioned-value-map/issues"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-eslint": "^8.0.1",
-    "babel-plugin-transform-strip-jsnext": "^2.0.1",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-flow": "^6.23.0",
-    "babel-preset-power-assert": "^1.0.0",
-    "babel-register": "^6.26.0",
     "eslint": "^4.10.0",
-    "eslint-plugin-flowtype": "^2.39.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-typescript": "^0.14.0",
     "flow-bin": "~0.66.0",
     "kocha": "^1.9.1",
-    "power-assert": "^1.4.4"
+    "power-assert": "^1.4.4",
+    "prettier": "^1.16.1",
+    "typescript": "^3.2.4",
+    "typescript-eslint-parser": "^22.0.0"
   }
 }
