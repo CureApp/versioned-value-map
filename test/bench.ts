@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
-import { VersionedValueMap } from "../src/index.js";
+/* eslint-env mocha */
+import { VersionedValueMap } from "../src/VersionedValueMap";
 
 const repeat = (n: number, fn: Function) => {
   let i = 0;
@@ -32,7 +33,7 @@ const isoStr = (secAgo: number) => {
 };
 
 const createPlainMap = (n: number, m: number) => {
-  const largeObj = {};
+  const largeObj: { [key: string]: { name: string; records: any[] } } = {};
   let i = 0;
 
   while (i < n) {
@@ -56,7 +57,7 @@ const plainMapLen = JSON.stringify(plainMap).length;
 console.log("plainMap5000items 10records/each", plainMapLen + " byte");
 console.log("plainMap datasize", Math.round(plainMapLen / 1024) + " KB");
 console.time("construct 10000");
-let map;
+let map: VersionedValueMap;
 repeat(10000, () => (map = new VersionedValueMap(plainMap)));
 console.timeEnd("construct 10000");
 console.time("$add 10000");

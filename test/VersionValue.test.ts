@@ -1,6 +1,5 @@
-import { describe, it } from "kocha";
-
-import { VersionedValue } from "../src/index.js";
+/* eslint-env mocha */
+import { VersionedValue } from "../src/VersionedValue";
 import assert from "power-assert";
 
 const isoStr = (secAgo: number) => {

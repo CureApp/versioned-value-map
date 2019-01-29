@@ -1,6 +1,6 @@
-import { VersionedValue, VersionedValueMap } from "../src/index.js";
-import { describe, it } from "kocha";
-
+/* eslint-env mocha */
+import { VersionedValue } from "../src/VersionedValue";
+import { VersionedValueMap } from "../src/VersionedValueMap";
 import assert from "power-assert";
 
 const isoStr = (secAgo: number) => {
@@ -33,36 +33,28 @@ describe("VersionedValueMap", () => {
     const y = new VersionedValueMap(JSON.parse(JSON.stringify(x)));
     assert.deepEqual(x, y);
   });
-  it(
-    "throws an error when invalid name is passed",
-    () => {
-      assert.throws(() => {
-        new VersionedValueMap({
-          items: {
-            "foo.bar": {
-              name: "foo"
-            }
+  it("throws an error when invalid name is passed", () => {
+    assert.throws(() => {
+      new VersionedValueMap({
+        items: {
+          "foo.bar": {
+            name: "foo"
           }
-        });
+        }
       });
-    },
-    /Invalid name format/
-  );
-  it(
-    "throws an error when invalid data is passed",
-    () => {
-      assert.throws(() => {
-        new VersionedValueMap({
-          items: {
-            foo: {
-              name: "bar"
-            }
+    }, /Invalid name format/);
+  });
+  it("throws an error when invalid data is passed", () => {
+    assert.throws(() => {
+      new VersionedValueMap({
+        items: {
+          foo: {
+            name: "bar"
           }
-        });
+        }
       });
-    },
-    /Invalid plain data/
-  );
+    }, /Invalid plain data/);
+  });
   describe("length", () => {
     it("is the number of the registered items", () => {
       let x = new VersionedValueMap();
