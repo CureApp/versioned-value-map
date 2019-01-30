@@ -3,7 +3,7 @@
 
 The immutable, portable, serializable, restorable and extensible container of time-series data.
 You can add/remove values and new instance will be created.
-Easy integration with [Redux](https://redux.js.org) and [Phenyl](https://github.com/phenyl-js/phenyl).
+Easy integration with [Redux](https://redux.js.org) and [sp2](https//github.com/phenyl-js/sp2), [Phenyl](https://github.com/phenyl-js/phenyl).
 
 # Installation
 
