@@ -1,5 +1,5 @@
+/* eslint-env mocha, node */
 /* eslint-disable no-console */
-/* eslint-env mocha */
 import { VersionedValueMap } from "../src/VersionedValueMap";
 
 const repeat = (n: number, fn: Function) => {
