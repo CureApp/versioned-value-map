@@ -3,7 +3,7 @@
 
 The immutable, portable, serializable, restorable and extensible container of time-series data.
 You can add/remove values and new instance will be created.
-Easy integration with [Redux](https://redux.js.org) and [sp2](https//github.com/phenyl-js/sp2), [Phenyl](https://github.com/phenyl-js/phenyl).
+Easy integration with [Redux](https://redux.js.org) and [sp2](https://github.com/phenyl-js/sp2), [Phenyl](https://github.com/phenyl-js/phenyl).
 
 # Installation
 
@@ -166,22 +166,22 @@ Unlike `$add()` which directly create new map, `add()` create `UpdateOperation` 
 ```
 
 This format is almost the same as **[MongoDB's Update Operators](https://docs.mongodb.com/manual/reference/operator/update/)**.
-See [power-assign Documentation](https://github.com/phenyl-js/phenyl/tree/master/modules/power-assign) for more detailed information.
+See [sp2 Documentation](https://github.com/phenyl-js/sp2) for more detailed information.
 
-## power-assign
+## sp2
 
-`UpdateOperation` can be parsed by a simple library called [power-assign](https://github.com/phenyl-js/phenyl/tree/master/modules/power-assign).
-Pass the `operation` above to `assign()` to create a new object.
+`UpdateOperation` can be parsed by a simple library called [sp2](https://github.com/phenyl-js/sp2).
+Pass the `operation` above to `update()` to create a new object.
 
 ```js
-import { assign } from "@sp2/updater";
+import { update } from "@sp2/updater";
 
-const newPlainMap = assign(oldMap, operation); // NewMap = OldMap + UpdateOperation
+const newPlainMap = update(oldMap, operation); // NewMap = OldMap + UpdateOperation
 
 const newMap = new VersionedValueMap(newPlainMap);
 ```
 
-As `assign()` returns plain object, you must call constructor after that.
+As `update()` returns plain object, you must call constructor after that.
 
 Alternatively, `updateAndRestore()` automatically do this.
 
@@ -198,7 +198,7 @@ Writing these code in Reducer function, you can handle the state of `VersionedVa
 First, let's define the reducer.
 
 ```js
-import { assignToProp } from 'power-assign'
+import { updateProp } from '@sp2/udpater'
 
 function reducer(state, action) {
   if (!state) {
@@ -206,14 +206,14 @@ function reducer(state, action) {
   }
   if (action.type === 'update-map') {
     const updateOperation = action.payload
-    // This immutably assigns the update operation to "map"
-    return assignToProp(state, 'map', updateOperation)
+    // This immutably updates the update operation to "map"
+    return updateProp(state, 'map', updateOperation)
   }
   ...
 }
 ```
 
-`assignToProp()` is like `assign()` but it assigns not to the `state` but to `state.map`.
+`updateProp()` is like `update()` but it updates not to the `state` but to `state.map`.
 
 Action will be dispatched like this:
 
@@ -232,35 +232,8 @@ Make sure that `state` contains plain map object and every time reducer is calle
 We've benchmarked the performance and found that **a map with 5000 items containing 10 datapoints will be constructed within 1msec** (in Node.js v8).
 That means that we can ignore the construction cost in modern JS environments.
 
-# Flow
-
-If you are using [flow](https://flow.org), you can use its type by the following statement.
-
-```js
-import { VersionedValueMap } from "versioned-value-map/jsnext";
-```
-
-This `jsnext.js` exports pre-transpiled sources, which is helpful in developing phase.
-In transpiling/bundling phase, however, maybe you want this package to be transpiled.
-In this case, it would be helpful to use a babel-plugin called [babel-plugin-transform-strip-jsnext](https://github.com/CureApp/babel-plugin-transform-strip-jsnext) to strip the `/jsnext` suffix.
-
-```bash
-npm install babel-plugin-transform-strip-jsnext
-```
-
-.babelrc
-
-```js
-{
-  "plugins": ["transform-strip-jsnext"]
-}
-```
-
-Also make sure to add the following line to the `[options]` section in your `.flowconfig`.
-
-```
-suppress_comment=.*\\$FlowIssue(\\(.*\\))?
-```
+# TypeScript support
+You can write more robust codes with TypeScript.
 
 ## Put type map for better inference
 
@@ -275,7 +248,7 @@ const map: VersionedValueMap<{
 }> = new VersionedValueMap();
 ```
 
-Then, flow can get its types.
+Then, TypeScript can get its types.
 
 ```js
 const str = map.get("foo");
