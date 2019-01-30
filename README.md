@@ -1,4 +1,5 @@
 # VersionedValueMap
+[![CircleCI](https://circleci.com/gh/CureApp/versioned-value-map.svg?style=svg)](https://circleci.com/gh/CureApp/versioned-value-map)
 
 The immutable, portable, serializable, restorable and extensible container of time-series data.
 You can add/remove values and new instance will be created.
