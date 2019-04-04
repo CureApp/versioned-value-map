@@ -1,14 +1,14 @@
 # VersionedValueMap
 [![CircleCI](https://circleci.com/gh/CureApp/versioned-value-map.svg?style=svg)](https://circleci.com/gh/CureApp/versioned-value-map)
 
-The immutable, portable, serializable, restorable and extensible container of time-series data.
+An immutable, portable, serializable, restorable, and extensible container of time-series data.
 You can add/remove values and new instance will be created.
-Easy integration with [Redux](https://redux.js.org) and [sp2](https://github.com/phenyl-js/sp2), [Phenyl](https://github.com/phenyl-js/phenyl).
+It can be easily integrated with [Redux](https://redux.js.org), [sp2](https://github.com/phenyl-js/sp2), and [Phenyl](https://github.com/phenyl-js/phenyl).
 
 # Installation
 
 ```bash
-$ npm install versioned-value-map
+$ npm install --save versioned-value-map
 ```
 
 # Basic usage
@@ -58,7 +58,7 @@ const newMap = map.$add("propName01", "foobar", "2018-03-02T18:56:00.222Z");
 
 ### Current values
 
-Just call `map.get(name)`.
+Call `map.get(name)` to get the current value of the Value Map.
 
 ```js
 const map = new VersionedValueMap().$add("propName01", "foobar");
@@ -66,7 +66,7 @@ const currentValue = map.get("propName01");
 assert(currentValue === "foobar");
 ```
 
-Trying to non-registered value will get null.
+Trying to get non-registered value will return `null`.
 
 ```js
 const currentValue = map.get("abc");
@@ -79,7 +79,7 @@ assert(currentValue == null);
 const item = map.getItem("propName01");
 ```
 
-`item` is the instance of `VersionedValue` and forms the following structure.
+`item` is an instance of `VersionedValue` that forms the following structure:
 
 ```js
 {
@@ -90,7 +90,7 @@ const item = map.getItem("propName01");
 }
 ```
 
-These all properties are public and feel free to access to them like the following.
+All these properties are public and it can be accessed like the following:
 
 ```js
 const createdAt = map.getItem("propName01").records[0].at;
@@ -98,17 +98,17 @@ const createdAt = map.getItem("propName01").records[0].at;
 
 ## Remove values
 
-Removing the newest value:
+Create a new map with newest value removed from it:
 
 ```js
 const newMap = map.$removeNewest("propName01");
 ```
 
-Make sure `map` is unchanged.
+You can see that `map` is unchanged.
 
 ### Remove the specific value with timestamp
 
-You can use `map.$remove(name, at)` here.
+You can use `map.$remove(name, at)` to remove a specific value at specific timestamp.
 
 ```js
 const newMap = map.$remove("propName01", "2018-03-02T18:56:00.222Z");
@@ -154,7 +154,7 @@ const map = new VersionedValueMap();
 const operation = map.add("propName01", "foobar");
 ```
 
-Unlike `$add()` which directly create new map, `add()` create `UpdateOperation` instead.
+Unlike `$add()` which directly creates a new map, `add()` creates an `UpdateOperation` instead.
 `operation` here contains the **operation to update map as data**.
 
 ```js
@@ -171,7 +171,7 @@ See [sp2 Documentation](https://github.com/phenyl-js/sp2) for more detailed info
 ## sp2
 
 `UpdateOperation` can be parsed by a simple library called [sp2](https://github.com/phenyl-js/sp2).
-Pass the `operation` above to `update()` to create a new object.
+Pass the `operation` generated above to `update()` to create a new object.
 
 ```js
 import { update } from "@sp2/updater";
@@ -181,9 +181,9 @@ const newPlainMap = update(oldMap, operation); // NewMap = OldMap + UpdateOperat
 const newMap = new VersionedValueMap(newPlainMap);
 ```
 
-As `update()` returns plain object, you must call constructor after that.
+Since `update()` returns a plain object, you will need to call constructor afterwards to create a new `VersionValueMap`.
 
-Alternatively, `updateAndRestore()` automatically do this.
+Alternatively, you can call `updateAndRestore()` to automatically create a new `VersionValueMap`.
 
 ```js
 import { updateAndRestore } from "@sp2/updater";
@@ -191,7 +191,7 @@ import { updateAndRestore } from "@sp2/updater";
 const newMap = updateAndRestore(oldMap, operation);
 ```
 
-Writing these code in Reducer function, you can handle the state of `VersionedValueMap` with Redux.
+Writing these code in Reducer function will let you handle the state of `VersionedValueMap` with Redux.
 
 ## example
 
@@ -215,7 +215,7 @@ function reducer(state, action) {
 
 `updateProp()` is like `update()` but it updates not to the `state` but to `state.map`.
 
-Action will be dispatched like this:
+Action can be dispatched like this:
 
 ```js
 const state = store.getState();
@@ -228,16 +228,16 @@ const action = {
 dispatch(action);
 ```
 
-Make sure that `state` contains plain map object and every time reducer is called the map is constructed by `new VersionedValueMap(state.map)`.
+Make sure that `state` contains a plain map object and every time reducer is called the map is constructed by `new VersionedValueMap(state.map)`.
 We've benchmarked the performance and found that **a map with 5000 items containing 10 datapoints will be constructed within 1msec** (in Node.js v8).
-That means that we can ignore the construction cost in modern JS environments.
+That means we can ignore the construction cost in modern JS environments.
 
 # TypeScript support
 You can write more robust codes with TypeScript.
 
 ## Put type map for better inference
 
-Put type map in initializing instances as below.
+Put type map in initializing instances as below:
 
 ```js
 import { VersionedValueMap } from "versioned-value-map/jsnext";
